@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AUDIT問診">
+<meta name="theme-color" content="#7A3B69">
+<title>減酒外来　AUDIT問診</title>
+
+<script>
+const manifestData = {
+  name: "減酒外来　AUDIT問診",
+  short_name: "AUDIT問診",
+  start_url: "./",
+  display: "standalone",
+  background_color: "#F5F0F3",
+  theme_color: "#7A3B69",
+  icons: [
+    { src: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjM4IiBmaWxsPSIjN0EzQjY5Ii8+PHRleHQgeD0iOTYiIHk9IjEyOCIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPvCfjbc8L3RleHQ+PC9zdmc+", sizes: "192x192", type: "image/svg+xml" }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifestData)], {type:"application/json"});
+const manifestUrl = URL.createObjectURL(blob);
+const link = document.createElement("link");
+link.rel = "manifest"; link.href = manifestUrl;
+document.head.appendChild(link);
+</script>
+
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjM4IiBmaWxsPSIjN0EzQjY5Ii8+PHRleHQgeD0iOTYiIHk9IjEyOCIgZm9udC1zaXplPSI5MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPvCfjbc8L3RleHQ+PC9zdmc+">
+
+<style>
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; font-family: 'Hiragino Kaku Gothic ProN','Meiryo',sans-serif; background: #F5F0F3; color: #2A1F26; }
+
+.header { background: #7A3B69; padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top)); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.header-title { color: #fff; font-weight: 800; font-size: 18px; }
+.header-sub { color: rgba(255,255,255,0.65); font-size: 12px; }
+
+.progress { display: flex; align-items: center; gap: 6px; }
+.dot-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; cursor: pointer; padding: 2px 6px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; transition: all 0.2s; }
+.dot-label { font-size: 10px; color: rgba(255,255,255,0.7); }
+.dot-label.active { color: #fff; font-weight: 700; }
+
+.content { max-width: 800px; margin: 0 auto; padding: 20px 16px 100px; }
+
+.card { background: #fff; border-radius: 14px; border: 1px solid #E5D7E0; padding: 20px; margin-bottom: 16px; }
+
+.section-title { font-size: 22px; font-weight: 800; color: #7A3B69; text-align: center; margin-bottom: 6px; }
+.section-sub { font-size: 14px; color: #8A7385; text-align: center; margin-bottom: 20px; }
+
+.page-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+.page-dot { width: 10px; height: 10px; border-radius: 50%; background: #E5D7E0; }
+.page-dot.active { background: #7A3B69; }
+
+.field-label { font-size: 14px; color: #8A7385; font-weight: 600; display: block; margin-bottom: 6px; }
+
+input[type=text], input[type=date] {
+  width: 100%; padding: 13px 14px; font-size: 17px; border: 2px solid #E5D7E0; border-radius: 12px; outline: none; font-family: inherit;
+}
+input:focus { border-color: #7A3B69; }
+
+.touch-radio { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 56px; padding: 10px 8px; background: #fff; color: #2A1F26; border: 2px solid #E5D7E0; border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 400; text-align: center; line-height: 1.3; transition: all 0.12s; user-select: none; }
+.touch-radio.selected { background: #7A3B69; color: #fff; border-color: #7A3B69; font-weight: 700; }
+
+.q-card { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid #E5D7E0; }
+.q-card:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.q-num { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #7A3B69; color: #fff; font-weight: 800; font-size: 13px; margin-right: 8px; flex-shrink: 0; }
+.q-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: flex-start; }
+.q-note { font-size: 12px; color: #8A7385; margin: 6px 0 10px 36px; line-height: 1.5; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+.opts-stack { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.opt-row { display: flex; align-items: center; min-height: 50px; padding: 10px 16px; background: #fff; border: 2px solid #E5D7E0; border-radius: 12px; cursor: pointer; font-size: 15px; transition: all 0.12s; }
+.opt-row.selected { background: #7A3B69; color: #fff; border-color: #7A3B69; font-weight: 700; }
+.opt-score { font-size: 12px; opacity: 0.7; margin-right: 10px; min-width: 16px; }
+
+.nav-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 20px; }
+.btn { padding: 16px 28px; border-radius: 14px; font-size: 16px; font-weight: 700; cursor: pointer; border: 2px solid #7A3B69; min-width: 130px; font-family: inherit; transition: opacity 0.1s; }
+.btn:active { opacity: 0.75; }
+.btn-primary { background: #7A3B69; color: #fff; }
+.btn-outline { background: #fff; color: #7A3B69; }
+.btn-disabled { background: #E5D7E0; color: #8A7385; border-color: #E5D7E0; cursor: not-allowed; }
+
+.info-box { background: #F5E8F1; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #7A3B69; margin-bottom: 14px; line-height: 1.6; }
+.warn-box { background: #FFF3CD; border-radius: 10px; padding: 10px 14px; font-size: 13px; color: #7A5500; margin-bottom: 14px; }
+
+.score-display { text-align: center; margin-bottom: 16px; }
+.score-num { font-size: 64px; font-weight: 900; line-height: 1; }
+.score-max { font-size: 16px; color: #8A7385; margin-top: 4px; }
+.score-badge { display: inline-block; border-radius: 10px; padding: 6px 20px; font-size: 16px; font-weight: 700; margin-top: 12px; }
+
+.scale-bar { position: relative; height: 36px; border-radius: 18px; overflow: hidden; margin: 20px 0 8px; display: flex; }
+.scale-seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+.scale-marker { position: absolute; top: -8px; width: 4px; height: 52px; background: #2A1F26; border-radius: 2px; transform: translateX(-50%); }
+.scale-labels { display: flex; justify-content: space-between; font-size: 11px; color: #8A7385; margin-top: 4px; }
+
+.q-breakdown { display: flex; align-items: center; margin-bottom: 8px; }
+.qb-label { width: 130px; font-size: 12px; color: #8A7385; flex-shrink: 0; }
+.qb-bar-bg { flex: 1; height: 10px; background: #E5D7E0; border-radius: 5px; overflow: hidden; margin: 0 10px; }
+.qb-bar { height: 100%; border-radius: 5px; transition: width 0.4s; }
+.qb-score { width: 28px; font-size: 13px; font-weight: 700; text-align: right; }
+
+.alert-item { border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 1000; display: flex; flex-direction: column; }
+.modal-header { background: #7A3B69; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.modal-header span { color: #fff; font-weight: 700; font-size: 17px; }
+.modal-close { background: rgba(255,255,255,0.2); border: none; color: #fff; border-radius: 10px; padding: 8px 20px; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.modal-iframe { flex: 1; border: none; background: #fff; }
+
+.hidden { display: none !important; }
+.drink-ref { background: #F5E8F1; border-radius: 10px; padding: 12px 16px; font-size: 12px; color: #7A3B69; margin-bottom: 16px; line-height: 1.7; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-sub">小松トータルケアクリニック</div>
+    <div class="header-title">減酒外来　AUDIT問診</div>
+  </div>
+  <div class="progress" id="progressDots"></div>
+</div>
+
+<div class="content" id="mainContent"></div>
+
+<div class="modal-overlay hidden" id="pdfModal">
+  <div class="modal-header">
+    <span>📄 AUDIT 採点結果プレビュー</span>
+    <button class="modal-close" onclick="closePdf()">✕ 閉じる</button>
+  </div>
+  <iframe class="modal-iframe" id="pdfFrame" title="採点結果"></iframe>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// AUDIT 質問定義（公式10項目）
+// ══════════════════════════════════════════
+const Q1_OPTS = [
+  ["飲まない", 0], ["1か月に1回以下", 1], ["1か月に2〜4回", 2], ["週に2〜3回", 3], ["週に4回以上", 4]
+];
+const Q2_OPTS = [
+  ["1〜2ドリンク", 0], ["3〜4ドリンク", 1], ["5〜6ドリンク", 2], ["7〜9ドリンク", 3], ["10ドリンク以上", 4]
+];
+const FREQ5_OPTS = [
+  ["ない", 0], ["1か月に1回未満", 1], ["1か月に1回", 2], ["週に1回", 3], ["毎日あるいはほとんど毎日", 4]
+];
+const Q9_10_OPTS = [
+  ["ない", 0], ["あるが、過去1年間にはなし", 2], ["過去1年間にあり", 4]
+];
+
+const QUESTIONS = [
+  { key:"q1", title:"あなたはアルコール含有飲料（お酒）をどのくらいの頻度で飲みますか？", opts:Q1_OPTS, note:null },
+  { key:"q2", title:"飲酒するときには通常どのくらいの量を飲みますか？", opts:Q2_OPTS,
+    note:"「1ドリンク」は純アルコールで10グラムです。ビール250ml、日本酒0.5合（90ml）、焼酎(25%)50mlが1ドリンクに相当します。" },
+  { key:"q3", title:"一度に6ドリンク以上飲酒することがどのくらいの頻度でありますか？", opts:FREQ5_OPTS,
+    note:"6ドリンクとは、ビールだとロング缶3本、日本酒だと3合、焼酎(25%)だと300mlに相当します。" },
+  { key:"q4", title:"過去1年間に、飲み始めると止められなかったことが、どのくらいの頻度でありましたか？", opts:FREQ5_OPTS, note:null },
+  { key:"q5", title:"過去1年間に、普通だと行えることを飲酒していたためにできなかったことが、どのくらいの頻度でありましたか？", opts:FREQ5_OPTS, note:null },
+  { key:"q6", title:"過去1年間に、深酒のあと体調を整えるために、朝迎え酒をしなければならなかったことが、どのくらいの頻度でありましたか？", opts:FREQ5_OPTS, note:null },
+  { key:"q7", title:"過去1年間に、飲酒後罪悪感や自責の念にかられたことが、どのくらいの頻度でありましたか？", opts:FREQ5_OPTS, note:null },
+  { key:"q8", title:"過去1年間に、飲酒のため前夜の出来事を思い出せなかったことが、どのくらいの頻度でありましたか？", opts:FREQ5_OPTS, note:null },
+  { key:"q9", title:"飲酒した際に、あなた自身がけがをしたり、あるいは他の誰かにけがを負わせたことがありますか？", opts:Q9_10_OPTS, note:null },
+  { key:"q10", title:"肉親や親戚、友人、医師、あるいは他の健康管理にたずさわる人が、あなたの飲酒について心配したり、飲酒量を減らすように勧めたりしたことがありますか？", opts:Q9_10_OPTS, note:null },
+];
+
+// ページ分割（1ページ5問）
+const PAGE1_KEYS = QUESTIONS.slice(0,5).map(q=>q.key);
+const PAGE2_KEYS = QUESTIONS.slice(5,10).map(q=>q.key);
+
+// ══════════════════════════════════════════
+// 状態
+// ══════════════════════════════════════════
+let state = {
+  step: 0, // 0=患者情報 1=問診ページ1 2=問診ページ2 3=結果
+  name: "", date: new Date().toISOString().split("T")[0],
+  answers: {},
+};
+
+const GROUP_LABELS = ["患者情報","問診①","問診②","結果"];
+
+// ══════════════════════════════════════════
+// スコア計算
+// ══════════════════════════════════════════
+function calcTotal() {
+  return QUESTIONS.reduce((sum,q)=>{
+    const v = state.answers[q.key];
+    return sum + (v!==undefined && v!==null ? v : 0);
+  }, 0);
+}
+
+function page1Done() { return PAGE1_KEYS.every(k => state.answers[k]!==undefined && state.answers[k]!==null); }
+function page2Done() { return PAGE2_KEYS.every(k => state.answers[k]!==undefined && state.answers[k]!==null); }
+
+function getLabel(score) {
+  if (score < 8) return { text:"問題飲酒なし", color:"#1A6B3C", bg:"#D4EDDA", level:0 };
+  if (score < 15) return { text:"危険な飲酒群", color:"#7A5500", bg:"#FFF3CD", level:1 };
+  if (score < 20) return { text:"アルコール使用障害が疑われる", color:"#A33D1F", bg:"#FCE4D6", level:2 };
+  return { text:"アルコール依存症が疑われる", color:"#8B1A1A", bg:"#FDDEDE", level:3 };
+}
+
+// ══════════════════════════════════════════
+// UI部品
+// ══════════════════════════════════════════
+function optionRows(opts, selected, onSelect) {
+  return `<div class="opts-stack">
+    ${opts.map(([label,score],i)=>`
+      <div class="opt-row${selected===score?" selected":""}" onclick="(${onSelect})(${score})">
+        <span class="opt-score">${score}点</span>${label}
+      </div>`).join("")}
+  </div>`;
+}
+
+function navRow(leftLabel, leftAction, leftDisabled, rightLabel, rightAction, rightDisabled) {
+  const left = leftLabel
+    ? `<button class="btn btn-outline${leftDisabled?" btn-disabled":""}" onclick="${leftAction}" ${leftDisabled?"disabled":""}>${leftLabel}</button>`
+    : `<div></div>`;
+  const right = rightLabel
+    ? `<button class="btn btn-primary${rightDisabled?" btn-disabled":""}" onclick="${rightAction}" ${rightDisabled?"disabled":""}>${rightLabel}</button>`
+    : `<div></div>`;
+  return `<div class="nav-row">${left}${right}</div>`;
+}
+
+// ══════════════════════════════════════════
+// 各ステップ
+// ══════════════════════════════════════════
+function renderStep0() {
+  const {name,date} = state;
+  return `
+    <div class="section-title" style="margin-bottom:4px">患者情報の確認</div>
+    <div class="section-sub">スタッフが記入してください</div>
+    <div class="card">
+      <label class="field-label">患者氏名（任意）</label>
+      <input type="text" value="${name}" placeholder="例：山田 太郎" oninput="state.name=this.value" style="margin-bottom:16px">
+      <label class="field-label">受診日</label>
+      <input type="date" value="${date}" oninput="state.date=this.value">
+    </div>
+    <div class="info-box">
+      これから、過去1年間の飲酒についていくつか質問します。アルコールは健康やお薬にも影響しますので、できる限り正直にお答えください。回答内容は秘密が守られます。
+    </div>
+    ${navRow("","",true,"問診へ進む →","goTo(1)",false)}
+  `;
+}
+
+function renderQuestionPage(keys, pageIdx) {
+  return `
+    <div class="section-title">AUDIT　問診票</div>
+    <div class="section-sub">過去1年間のあなたの飲酒についてお答えください</div>
+    <div class="page-dots"><div class="page-dot${pageIdx===0?" active":""}"></div><div class="page-dot${pageIdx===1?" active":""}"></div></div>
+
+    <div class="drink-ref">
+      <strong>「1ドリンク」の目安：</strong>純アルコール10g＝ビール250ml／日本酒0.5合(90ml)／焼酎(25%)50ml／ウイスキーダブル1杯
+    </div>
+
+    <div class="card">
+      ${keys.map(key => {
+        const q = QUESTIONS.find(x=>x.key===key);
+        const qIdx = QUESTIONS.indexOf(q) + 1;
+        return `
+        <div class="q-card">
+          <div class="q-title"><span class="q-num">${qIdx}</span><span>${q.title}</span></div>
+          ${q.note ? `<div class="q-note">${q.note}</div>` : ""}
+          ${optionRows(q.opts, state.answers[key], `(v)=>{state.answers['${key}']=v;rerender()}`)}
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderStep1() {
+  return renderQuestionPage(PAGE1_KEYS, 0) +
+    navRow("← 患者情報","goTo(0)",false,"次へ →","goTo(2)",!page1Done());
+}
+
+function renderStep2() {
+  return renderQuestionPage(PAGE2_KEYS, 1) +
+    navRow("← 前へ","goTo(1)",false,"結果を見る →","goTo(3)",!page2Done());
+}
+
+function renderStep3() {
+  const total = calcTotal();
+  const L = getLabel(total);
+  const pct = Math.min(total/40*100, 100);
+
+  const alerts = [];
+  if (total >= 20) alerts.push(["red","🔴 20点以上：アルコール依存症が強く疑われます。専門医評価が必須です。"]);
+  else if (total >= 15) alerts.push(["red","🔴 15点以上：アルコール使用障害が疑われます。専門医評価を推奨してください。"]);
+  else if (total >= 8) alerts.push(["yellow","🟡 8点以上：危険な飲酒群です。ブリーフインターベンション（簡易介入）の対象です。"]);
+  else alerts.push(["green","🟢 8点未満：現時点で大きな問題は見られません。"]);
+
+  if (state.answers.q3 >= 3) alerts.push(["yellow","🟡 設問3が高頻度：大量飲酒の頻度が高く、身体的リスクに注意してください。"]);
+  if (state.answers.q4 >= 2) alerts.push(["yellow","🟡 設問4：飲酒のコントロール喪失あり。依存形成の兆候として確認してください。"]);
+  if (state.answers.q6 >= 2) alerts.push(["red","🔴 設問6：朝の迎え酒あり。身体依存（離脱症状）の可能性を確認してください。"]);
+  if (state.answers.q9 >= 2) alerts.push(["yellow","🟡 設問9：飲酒に関連した外傷歴あり。詳しい状況を確認してください。"]);
+  if (state.answers.q10 === 4) alerts.push(["yellow","🟡 設問10：過去1年以内に周囲から心配・指摘あり。"]);
+
+  return `
+    <div class="section-title">📋 AUDIT　採点結果</div>
+    ${state.name?`<div class="section-sub">${state.name}</div>`:""}
+
+    <div class="card">
+      <div class="score-display">
+        <div class="score-num" style="color:${L.color}">${total}</div>
+        <div class="score-max">/ 40点</div>
+        <div class="score-badge" style="background:${L.bg};color:${L.color}">${L.text}</div>
+      </div>
+
+      <div class="scale-bar">
+        <div class="scale-seg" style="width:20%;background:#1A6B3C">0〜7</div>
+        <div class="scale-seg" style="width:17.5%;background:#D4A017">8〜14</div>
+        <div class="scale-seg" style="width:12.5%;background:#C0622E">15〜19</div>
+        <div class="scale-seg" style="width:50%;background:#8B1A1A">20〜40</div>
+        <div class="scale-marker" style="left:${pct}%"></div>
+      </div>
+      <div class="scale-labels"><span>0</span><span>8</span><span>15</span><span>20</span><span>40</span></div>
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;font-size:15px;color:#7A3B69;margin-bottom:14px">設問別スコア内訳</div>
+      ${QUESTIONS.map((q,i)=>{
+        const s = state.answers[q.key] ?? 0;
+        const maxS = 4;
+        const pctW = (s/maxS)*100;
+        const col = s===0?"#1A6B3C":s<=1?"#D4A017":s<=2?"#C0622E":"#8B1A1A";
+        return `<div class="q-breakdown">
+          <div class="qb-label">問${i+1}</div>
+          <div class="qb-bar-bg"><div class="qb-bar" style="width:${pctW}%;background:${col}"></div></div>
+          <div class="qb-score" style="color:${col}">${s}/4</div>
+        </div>`;
+      }).join("")}
+    </div>
+
+    <div class="card">
+      <div style="font-weight:700;font-size:15px;color:#7A3B69;margin-bottom:12px">医師への報告事項</div>
+      ${alerts.map(([lv,txt])=>{
+        const bg=lv==="red"?"#FDDEDE":lv==="yellow"?"#FFF3CD":"#D4EDDA";
+        const col=lv==="red"?"#8B1A1A":lv==="yellow"?"#7A5500":"#1A6B3C";
+        return `<div class="alert-item" style="background:${bg};color:${col}">${txt}</div>`;
+      }).join("")}
+    </div>
+
+    <div style="display:flex;gap:12px">
+      <button class="btn btn-outline" style="flex:1" onclick="resetAll()">最初からやり直す</button>
+      <button class="btn btn-primary" style="flex:1" onclick="showPdf()">📄 PDFで表示</button>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════
+// アクション
+// ══════════════════════════════════════════
+function goTo(step) { state.step=step; rerender(); window.scrollTo(0,0); }
+
+function resetAll() {
+  state = { step:0, name:"", date: new Date().toISOString().split("T")[0], answers:{} };
+  rerender(); window.scrollTo(0,0);
+}
+
+function showPdf() {
+  const total = calcTotal();
+  const L = getLabel(total);
+  const today = new Date().toLocaleDateString("ja-JP",{year:"numeric",month:"long",day:"numeric"});
+
+  const alerts = [];
+  if (total >= 20) alerts.push(["red","🔴 20点以上：アルコール依存症が強く疑われます。専門医評価が必須です。"]);
+  else if (total >= 15) alerts.push(["red","🔴 15点以上：アルコール使用障害が疑われます。専門医評価を推奨してください。"]);
+  else if (total >= 8) alerts.push(["yellow","🟡 8点以上：危険な飲酒群です。ブリーフインターベンションの対象です。"]);
+  else alerts.push(["green","🟢 8点未満：現時点で大きな問題は見られません。"]);
+  if (state.answers.q3 >= 3) alerts.push(["yellow","🟡 設問3が高頻度：大量飲酒の頻度が高く、身体的リスクに注意。"]);
+  if (state.answers.q4 >= 2) alerts.push(["yellow","🟡 設問4：飲酒のコントロール喪失あり。"]);
+  if (state.answers.q6 >= 2) alerts.push(["red","🔴 設問6：朝の迎え酒あり。身体依存の可能性。"]);
+  if (state.answers.q9 >= 2) alerts.push(["yellow","🟡 設問9：飲酒に関連した外傷歴あり。"]);
+  if (state.answers.q10 === 4) alerts.push(["yellow","🟡 設問10：過去1年以内に周囲から心配・指摘あり。"]);
+
+  const qRows = QUESTIONS.map((q,i)=>{
+    const s = state.answers[q.key] ?? 0;
+    const pctW=(s/4)*100;
+    const col=s===0?"#1A6B3C":s<=1?"#D4A017":s<=2?"#C0622E":"#8B1A1A";
+    return `<div class="cr"><div class="cl">問${i+1}</div><div class="cb"><div style="width:${pctW}%;height:100%;background:${col};border-radius:5px"></div></div><div class="cs" style="color:${col}">${s}/4</div></div>`;
+  }).join("");
+
+  const html=`<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8">
+<style>
+body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;font-size:13px;color:#2A1F26;margin:16px;background:#F5F0F3;}
+h1{font-size:20px;color:#7A3B69;margin:0 0 4px;}
+.sub{font-size:13px;color:#8A7385;margin-bottom:18px;}
+.score-box{text-align:center;border-radius:14px;border:2px solid ${L.color};background:#fff;padding:24px;margin-bottom:18px;}
+.score-num{font-size:56px;font-weight:900;color:${L.color};line-height:1;}
+.score-max{font-size:14px;color:#8A7385;margin-top:4px;}
+.score-badge{display:inline-block;border-radius:8px;padding:5px 18px;font-size:15px;font-weight:700;margin-top:10px;background:${L.bg};color:${L.color};}
+.sec{background:#fff;border-radius:10px;padding:16px;border:1px solid #E5D7E0;margin-bottom:14px;}
+.sec-t{font-size:14px;font-weight:700;color:#7A3B69;margin-bottom:12px;}
+.cr{display:flex;align-items:center;margin-bottom:7px;}
+.cl{width:50px;font-size:12px;color:#8A7385;flex-shrink:0;}
+.cb{flex:1;height:10px;background:#E5D7E0;border-radius:5px;overflow:hidden;margin:0 10px;}
+.cs{width:30px;font-size:13px;font-weight:700;text-align:right;}
+.al{border-radius:8px;padding:8px 12px;margin-bottom:7px;font-size:13px;font-weight:600;}
+.ft{margin-top:20px;padding-top:10px;border-top:1px solid #E5D7E0;font-size:11px;color:#8A7385;text-align:center;}
+.pbtn{display:block;margin:0 auto 20px;padding:12px 40px;background:#7A3B69;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;}
+</style></head><body>
+<button class="pbtn" onclick="window.print()">🖨️ 印刷 / PDF保存</button>
+<h1>減酒外来　AUDIT 採点結果</h1>
+<div class="sub">小松トータルケアクリニック　${today}${state.name?"　患者："+state.name:""}</div>
+<div class="score-box">
+  <div class="score-num">${total}</div>
+  <div class="score-max">/ 40点</div>
+  <div class="score-badge">${L.text}</div>
+</div>
+<div class="sec"><div class="sec-t">設問別スコア内訳</div>${qRows}</div>
+<div class="sec"><div class="sec-t">医師への報告事項</div>
+${alerts.map(([lv,txt])=>{const bg=lv==="red"?"#FDDEDE":lv==="yellow"?"#FFF3CD":"#D4EDDA";const col=lv==="red"?"#8B1A1A":lv==="yellow"?"#7A5500":"#1A6B3C";return`<div class="al" style="background:${bg};color:${col}">${txt}</div>`;}).join("")}
+</div>
+<div class="ft">小松トータルケアクリニック　減酒外来チーム</div>
+</body></html>`;
+
+  document.getElementById("pdfFrame").srcdoc = html;
+  document.getElementById("pdfModal").classList.remove("hidden");
+}
+
+function closePdf() {
+  document.getElementById("pdfModal").classList.add("hidden");
+}
+
+// ══════════════════════════════════════════
+// レンダリング
+// ══════════════════════════════════════════
+function rerender() {
+  const stepToGroup = [0,1,2,3];
+  const grp = stepToGroup[state.step];
+  const groupGoto = [0,1,2,3];
+  document.getElementById("progressDots").innerHTML = GROUP_LABELS.map((lbl,i)=>`
+    <div class="dot-wrap" onclick="${i<grp?"goTo("+groupGoto[i]+")":''}">
+      <div class="dot" style="background:${i<grp?"#2ecc71":i===grp?"#fff":"rgba(255,255,255,0.3)"}; ${i===grp?"border:3px solid rgba(255,255,255,0.5)":""}"></div>
+      <span class="dot-label${i===grp?" active":""}">${lbl}</span>
+    </div>`).join("");
+
+  const renders = [renderStep0, renderStep1, renderStep2, renderStep3];
+  document.getElementById("mainContent").innerHTML = renders[state.step]();
+}
+
+rerender();
+
+if('serviceWorker' in navigator){
+  const swCode=`
+    const CACHE='audit-v1';
+    self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.add('/'))));
+    self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
+  `;
+  const swBlob=new Blob([swCode],{type:'application/javascript'});
+  const swUrl=URL.createObjectURL(swBlob);
+  navigator.serviceWorker.register(swUrl).catch(()=>{});
+}
+</script>
+</body>
+</html>
